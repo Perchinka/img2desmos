@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+import os
 from sympy import symbols, latex
 from svg.path import parse_path
 from xml.dom.minidom import parse
@@ -9,7 +12,9 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 import cv2
 import subprocess
 
-def png_to_svg(png_file: str, svg_file: str, upper_threshold: int = 200, lower_threshold: int = 100):
+from termcolor import colored
+
+def png_to_svg(png_file: str, svg_file: str, upper_threshold: int = 0, lower_threshold: int = 100):
     # Edge detection
     img = cv2.imread(png_file, 0)
     edges = cv2.Canny(img, lower_threshold, upper_threshold)
@@ -62,15 +67,18 @@ def main(
     ) as progress:
         progress.add_task(description="Calculating Formulas...", total=None)
         formulas_string = '\n'.join(print_bezier_formula(svg_path))
-    print(" - Calculations done")
+    print(f" - {colored('Calculations done', 'green')}")
 
     pyperclip.copy(formulas_string)
-    print(" - Formulas copied to the clipboard")
+    print(f" - {colored('Formulas copied to the clipboard', 'green')}")
 
     if formulas_path:
         with open(formulas_path, 'w') as f:
             f.write(formulas_string)
-        print(f"Formulas saved in {formulas_path}")
+            print(f" - {colored('Formulas saved in', 'green')} {colored(os.path.abspath(formulas_path), 'yellow')}")
+
+def start():
+    typer.run(main)
 
 if __name__ == "__main__":
-    typer.run(main)
+    start()
