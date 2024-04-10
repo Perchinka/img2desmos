@@ -9,7 +9,7 @@ This is a simple python script that converts an image to the bezier curves which
 
 - Python 3.11
 - Poetry
-- [Optional] Chafa (for previewing the images in terminal)
+- [Optional] Chafa (for previewing images in terminal)
 
 ## Installation
 
