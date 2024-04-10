@@ -44,7 +44,7 @@ def print_bezier_formula(svg_file: str):
 def main(
         img: str = typer.Argument(..., help='Path to the image to convert into graph'),
         formulas_path: str = typer.Option(None, '-o', '--output', help='Output formulas file path'),
-        preview: bool = typer.Option(False, '-p', '--preview', help='Preview the img in a window (chafa required)'), 
+        preview: bool = typer.Option(False, '-p', '--preview', help='Preview the img in a window (chafa is required)'), 
         upper_threshold: int = typer.Option(200, '--upper', help='Upper threshold for the edge detection'),
         lower_threshold: int = typer.Option(100, '--lower', help='Lower threshold for the edge detection'),     
 ):
