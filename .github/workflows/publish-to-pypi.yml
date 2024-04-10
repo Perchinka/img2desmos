@@ -1,4 +1,4 @@
-name: Publish
+name: Publish to PyPi
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
       with:
         python-version: 3.9
     - name: Install Poetry
-      run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+      run: pip install poetry
     - name: Add Poetry to path
       run: echo "${HOME}/.poetry/bin" >> $GITHUB_PATH
     - name: Install venv
