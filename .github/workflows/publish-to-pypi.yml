@@ -24,8 +24,8 @@ jobs:
     - name: Install venv
       run: poetry install
 
-    - name: Set version in pyproject.toml
-      run: poetry version ${{ github.event.release.tag_name }}
+    - name: Set version in pyproject.toml from VERSION file
+      run: poetry version $(cat VERSION)
 
     - run: poetry config pypi-token.pypi "${{ secrets.PYPI_API_TOKEN }}"
     - run: poetry publish --build

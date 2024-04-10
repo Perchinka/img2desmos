@@ -1,0 +1,41 @@
+name: Update Version
+
+on:
+  pull_request:
+    types: [labeled, unlabeled, synchronize]
+    branches: 
+      - main
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update version
+        run: |
+          VERSION=$(cat VERSION)
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          MINOR=$(echo $VERSION | cut -d. -f2)
+          FIX=$(echo $VERSION | cut -d. -f3)
+
+          if echo "${{ github.event.pull_request.labels.*.name }}" | grep -q "Major"; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            FIX=0
+          elif echo "${{ github.event.pull_request.labels.*.name }}" | grep -q "Minor"; then
+            MINOR=$((MINOR + 1))
+            FIX=0
+          elif echo "${{ github.event.pull_request.labels.*.name }}" | grep -q "Fix"; then
+            FIX=$((FIX + 1))
+          fi
+
+          echo "$MAJOR.$MINOR.$FIX" > VERSION
+
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Update version" -a
+          git push
