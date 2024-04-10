@@ -36,3 +36,7 @@ pip install img2desmos
 ╰───────────────────────────────────────────────────────────────────────────────────────────╯
 
 ```
+# Demo
+
+https://github.com/Perchinka/img2desmos/assets/34923601/b34c509b-6fae-4e57-8f8f-7d76a0139e42
+
