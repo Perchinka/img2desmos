@@ -14,17 +14,54 @@ import subprocess
 
 from termcolor import colored
 
+import potrace
+import numpy as np
+from PIL import Image
+
+
 def png_to_svg(png_file: str, svg_file: str, upper_threshold: int = 0, lower_threshold: int = 100):
     # Edge detection
     img = cv2.imread(png_file, 0)
     edges = cv2.Canny(img, lower_threshold, upper_threshold)
 
-    # Save as PNM file cause potrace doesn't support PNG :( # TODO When I replace potrace with the package, I can remove this and work with paths directly
     pnm_file = '/tmp/output.pnm'
     cv2.imwrite(pnm_file, edges)
 
-    # potrace. Probably I can do it with the package, but Naaaah, I'm too lazy :D
-    subprocess.run(f"potrace {pnm_file} -s -o {svg_file}", shell=True, check=True)
+    try:
+        image = Image.open(pnm_file)
+    except IOError:
+        raise Exception("Error opening the image")
+
+    bm = potrace.Bitmap(image, blacklevel=0.5)
+    paths = bm.trace(
+        turdsize=2,
+        turnpolicy=potrace.POTRACE_TURNPOLICY_MINORITY,
+        alphamax=1,
+        opticurve=False,
+        opttolerance=0.2
+        )      
+    with open(svg_file, "w") as fp:
+        fp.write(
+            f'''<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{image.width}" height="{image.height}" viewBox="0 0 {image.width} {image.height}">''')
+        parts = []
+        for curve in paths:
+            fs = curve.start_point
+            parts.append(f"M{fs.x},{fs.y}")
+            for segment in curve.segments:
+                if segment.is_corner:
+                    a = segment.c
+                    b = segment.end_point
+                    parts.append(f"L{a.x},{a.y}L{b.x},{b.y}")
+                else:
+                    a = segment.c1
+                    b = segment.c2
+                    c = segment.end_point
+                    parts.append(f"C{a.x},{a.y} {b.x},{b.y} {c.x},{c.y}")
+            parts.append("z")
+        fp.write(f'<path stroke="none" fill="black" fill-rule="evenodd" d="{"".join(parts)}"/>')
+        fp.write("</svg>") 
+
+    os.remove(pnm_file)
 
 def print_bezier_formula(svg_file: str):
     dom = parse(svg_file)
@@ -53,13 +90,12 @@ def main(
         upper_threshold: int = typer.Option(200, '--upper', help='Upper threshold for the edge detection'),
         lower_threshold: int = typer.Option(100, '--lower', help='Lower threshold for the edge detection'),     
 ):
-    svg_path = '/tmp/output.svg' # TODO Again, when I replace potrace with the package, I can remove this
-   
+    svg_path = '/tmp/output.svg'
+
     png_to_svg(img, svg_path, upper_threshold, lower_threshold)
     if preview:
         subprocess.run(f'chafa {img} {svg_path}', shell=True)
-
-    # Spiner spins while calculating the formulas
+        
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
