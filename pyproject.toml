@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "img2desmos"
-version = "0.1.1"
+version = "1.1.0"
 description = "CLI tool to convert images to the LaTeX bezier curves formulas"
 authors = ["Perchinka <aleksei.v.lukin@gmail.com>"]
 readme = "README.md"
