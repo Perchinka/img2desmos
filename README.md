@@ -4,7 +4,6 @@ This is a simple python script that converts an image to the bezier curves which
 
 ![image](https://github.com/Perchinka/img2desmos/assets/34923601/9579d060-ae62-4a45-bca7-415ef9858876)
 
-
 ## Requirements
 
 - Python 3.11
@@ -36,6 +35,9 @@ pip install img2desmos
 ╰───────────────────────────────────────────────────────────────────────────────────────────╯
 
 ```
+
+Formulas will be pasted into clipboard
+
 # Demo
 
 https://github.com/Perchinka/img2desmos/assets/34923601/b34c509b-6fae-4e57-8f8f-7d76a0139e42
