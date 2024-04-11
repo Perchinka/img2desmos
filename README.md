@@ -6,8 +6,7 @@ This is a simple python script that converts an image to the bezier curves which
 
 ## Requirements
 
-- Python 3.11
-- Poetry
+- Python >= 3.9
 - [Optional] Chafa (for previewing images in terminal)
 
 ## Installation
